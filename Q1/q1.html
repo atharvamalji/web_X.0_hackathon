@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <title>Question 1</title>
+</head>
+
+<body>
+    <div ng-app="app" class="flex flex-col h-screen bg-slate-50">
+        <header class="p-2 h-12 bg-purple-500">
+            <p class="text-xl text-white font-bold">Todo App</p>
+        </header>
+        <div ng-controller="AppController" class="p-4 space-y-4">
+            <div class="flex space-x-2">
+                <input class="p-2 w-full bg-white border rounded-md shadow-sm outline-none ring-blue-300 focus:ring-2"
+                    ng-model="todo" type="text" placeholder="Enter your todos here..">
+                <button class="p-2 bg-purple-500 rounded-md font-bold whitespace-nowrap text-white"
+                    ng-click="addTodo(todo)">{{ button_text
+                    }}</button>
+            </div>
+            <div class="border overflow-hidden rounded-md shadow-sm">
+                <table class="bg-white w-full border-hidden">
+                    <thead>
+                        <tr>
+                            <th class="border p-1 w-10">#</th>
+                            <th class="border p-1">Tasks</th>
+                            <th class="border p-1 w-20">Action</th>
+                            <th class="border p-1 w-28">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat='todo in todos'>
+                            <td class="border p-1 text-center">{{ todo.id + 1 }}</td>
+                            <td class="border p-1 px-2 {{ todo.completed ? 'line-through' : '' }}">{{ todo.content }}
+                            </td>
+                            <td class="border p-1 text-center"><input ng-model='todo.completed' type="checkbox"></td>
+                            <td class="border p-1">
+                                <p
+                                    class="mx-auto text-sm px-2 text-white text-center w-max rounded-full {{ todo.completed ? 'bg-green-500' : 'bg-red-500' }}">
+                                    {{ todo.completed ? "Completed" : "Incomplete" }}</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="fixed bottom-0 w-full">
+            <p class="border-t text-xs text-center bg-white p-1">
+                Created with 💖 by Atharva Malji & Team
+            </p>
+        </div>
+    </div>
+
+    <script>
+
+        var app = angular.module('app', []);
+
+        app.controller('AppController', function ($scope) {
+
+            let id = 1;
+            $scope.todo = "";
+            $scope.button_text = "Add Todo";
+            $scope.todos = [
+                {
+                    id: 0,
+                    content: "Get some $H!T done",
+                    completed: false
+                }
+            ];
+            $scope.addTodo = (todo) => {
+                console.log($scope.todos);
+                // additional check if the input is empty
+                if (todo === "") {
+                    alert("Todo cannot be empty");
+                    return;
+                }
+                // check if the todo already exists
+                if ($scope.todos.find(element => element.content === todo)) {
+                    alert("Todo already exists");
+                    return;
+                }
+                $scope.todos.push({
+                    id: id,
+                    content: todo,
+                    completed: false
+                });
+                // clearing input after creating todo
+                $scope.todo = "";
+                id++;
+            }
+        });
+
+    </script>
+</body>
+
+</html>

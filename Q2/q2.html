@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <title>Question 1</title>
+
+    <style>
+        .container {
+            max-width: 40rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div ng-app="app" class="flex flex-col min-h-screenv bg-slate-50">
+        <header class="sticky top-0 flex items-center px-4 h-12 bg-purple-500">
+            <p class="text-xl text-white font-bold">Case Converter App</p>
+        </header>
+        <div class="p-4 space-y-4 container">
+            <div ng-controller="TitleCaseAppController" class="border p-4 bg-white shadow-sm rounded-md space-y-4">
+                <div class="space-y-1">
+                    <p class="text-lg font-bold">Title case pipe implementation</p>
+                    <p class="text-sm">
+                        Title is a style of capitalization used for rendering the titles of
+                        published works. When using title case, all words are capitalized except
+                        for minor words unless they are the first or last word of the title
+                    </p>
+                </div>
+                <div>
+                    <input class="
+                      bg-slate-50
+                      border
+                      p-2
+                      w-full
+                      rounded
+                      outline-none
+                      ring-purple-300
+                      focus:ring-2
+                    " type="text" ng-model="input_text" ng-change="toTitleCase(input_text)"  placeholder="Enter a Sentence here" />
+                </div>
+                <div class="space-y-2">
+                    <p class="text-lg font-bold">Result</p>
+                    <input class="bg-slate-50 border p-2 w-full rounded" type="text"
+                        placeholder="Result will appear here" disabled value="{{ result_text }}" />
+                </div>
+            </div>
+            <div ng-controller="ReverseCaseAppController" class="border p-4 bg-white shadow-sm rounded-md space-y-4">
+                <div class="space-y-1">
+                    <p class="text-lg font-bold">Reverse case pipe implementation</p>
+                    <p class="text-sm">
+                        Reversing a string is the technique that reverses or changes the order of
+                        a given string so that the last character of the string becomes the first
+                        character of the string and so on.
+                    </p>
+                </div>
+                <div>
+                    <input class="
+                      bg-slate-50
+                      border
+                      p-2
+                      w-full
+                      rounded
+                      outline-none
+                      ring-purple-300
+                      focus:ring-2
+                    " type="text" ng-model="input_text" ng-change="reverseText(input_text)"
+                        placeholder="Enter a Sentence here" />
+                </div>
+                <div class="space-y-2">
+                    <p class="text-lg font-bold">Result</p>
+                    <input class="bg-slate-50 border p-2 w-full rounded" type="text"
+                        placeholder="Result will appear here" disabled value="{{ result_text }}" />
+                </div>
+            </div>
+        </div>
+        <div class="sticky bottom-0 w-full">
+            <p class="border-t text-xs text-center bg-white p-1">
+                Created with 💖 by Atharva Malji & Team
+            </p>
+        </div>
+    </div>
+
+    <!-- Logic Here -->
+    <script>
+
+        var app = angular.module('app', []);
+
+        app.controller('ReverseCaseAppController', function ($scope) {
+            $scope.input_text = "";
+            $scope.result_text = "";
+            $scope.reverseText = (text) => {
+                $scope.result_text = text.split("").reverse().join("");
+            }
+        });
+
+        app.controller('TitleCaseAppController', function ($scope) {
+
+            let excluded_words = [
+                'and',
+                'as',
+                'but',
+                'for',
+                'if',
+                'nor',
+                'or',
+                'so',
+                'yet',
+                'a',
+                'an',
+                'the',
+                'at',
+                'by',
+                'in',
+                'of',
+                'off',
+                'on',
+                'per',
+                'to',
+                'up',
+                'via',
+            ];
+
+            $scope.input_text = "";
+            $scope.result_text = "";
+            $scope.toTitleCase = (text) => {
+                let input_text = text.toLowerCase().split(" ");
+                for (var i = 0; i < input_text.length; i++) {
+                    if (i > 0 && i < input_text.length) {
+                        if (excluded_words.indexOf(input_text[i]) != -1) {
+                            input_text[i] = input_text[i];
+                            continue;
+                        }
+                    }
+                    input_text[i] = input_text[i].charAt(0).toUpperCase() + input_text[i].slice(1);
+                }
+                $scope.result_text = input_text.join(' ');
+            }
+        });
+
+    </script>
+</body>
+
+</html>

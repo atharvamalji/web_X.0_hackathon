@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <title>Question 1</title>
+
+    <style>
+        .container {
+            max-width: 60rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div ng-app="app" class="flex flex-col min-h-screen bg-slate-50">
+        <header class="sticky top-0 flex items-center px-4 h-12 bg-purple-500">
+            <p class="text-xl text-white font-bold">Case Converter App</p>
+        </header>
+        <div ng-controller="AppController" class="p-4 flex-1 space-y-4 container mx-auto">
+            <div class="flex space-x-2">
+                <input class="p-2 w-full bg-white border rounded-md shadow-sm outline-none ring-blue-300 focus:ring-2"
+                    ng-model="input_roll_no" type="text" placeholder="Enter your todos here..">
+                <button class="p-2 bg-purple-500 rounded-md font-bold whitespace-nowrap text-white"
+                    ng-click="searchStudent(input_roll_no)">{{ button_text
+                    }}</button>
+            </div>
+            <div class="p-4 bg-white border rounded-md shadow-sm space-y-2">
+                <p class="text-lg font-bold">Student Details</p>
+                <div>
+                    <div class="flex space-x-4">
+                        <p>Roll No.</p>
+                        <p class="font-bold">{{ searchedStudent.rollno }}</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <p>Name</p>
+                        <p class="font-bold">{{ searchedStudent.name }}</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <p>Maks Obtained</p>
+                        <p>
+                            MCQ : <span class="font-bold">{{ searchedStudent.mcq }}</span>
+                        </p>
+                        <p>
+                            Non MCQ: <span class="font-bold">{{ searchedStudent.nmcq }}</span>
+                        </p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <p>Total Maks Obtained</p>
+                        <p class="font-bold">
+                            {{ searchedStudent.total === "unavailable" ? "unavailable" :  searchedStudent.total }} / 20
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="border overflow-hidden rounded-md shadow-sm">
+                <table class="bg-white w-full border-hidden">
+                    <thead>
+                        <tr>
+                            <th class="border p-1 w-10">#</th>
+                            <th class="border p-1 cursor-pointer hover:bg-purple-50" ng-click="sortData('name')">Name</th>
+                            <th class="border p-1 w-28 cursor-pointer hover:bg-purple-50" ng-click="sortData('rollno')">Roll No.</th>
+                            <th class="border p-1 w-40 cursor-pointer hover:bg-purple-50" ng-click="sortData('mcq')">MCQ Marks</th>
+                            <th class="border p-1 w-40 cursor-pointer hover:bg-purple-50" ng-click="sortData('nmcq')">Non MCQ Marks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat='student in students | orderBy : column : isReverse'>
+                            <td class="border p-1 text-center">{{ $index + 1 }}</td>
+                            <td class="border p-1 px-2 {{ todo.completed ? 'line-through' : '' }}">{{ student.name }}</td>
+                            <td class="border p-1 px-2 {{ todo.completed ? 'line-through' : '' }}">{{ student.rollno }}</td>
+                            <td class="border p-1 px-2 {{ todo.completed ? 'line-through' : '' }}">{{ student.mcq }}</td>
+                            <td class="border p-1 px-2 {{ todo.completed ? 'line-through' : '' }}">{{ student.nmcq }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="sticky bottom-0 w-full">
+            <p class="border-t text-xs text-center bg-white p-1">
+                Created with 💖 by Atharva Malji & Team
+            </p>
+        </div>
+    </div>
+
+    <!-- Logic Here -->
+    <script>
+
+        var app = angular.module('app', []);
+
+        app.controller('AppController', function ($scope) {
+
+            let students = [
+                {
+                    rollno: '1',
+                    name: ' ANERAO AMOGH HEMANT',
+                    mcq: ' 7 ',
+                    nmcq: ' 8',
+                },
+                {
+                    rollno: '2',
+                    name: ' ARONDEKAR GANESH CHANDRAKANT',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '3',
+                    name: ' BAGAVE RENUKA RAVINDRA',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '4',
+                    name: ' BHAGWAT ATHARVA SANTOSH',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '5',
+                    name: ' BIRJE AAKANKSHA ANIL',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '6',
+                    name: ' BORKAR AFIYA AYUB',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '7',
+                    name: ' CHOUDHARY AJIT CHANDRAPAL',
+                    mcq: ' 8 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '8',
+                    name: ' DANGE AARYA SANJAY',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '9',
+                    name: ' DESAI SHRUTI SANTOSH',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '10',
+                    name: ' DHANGAT PRIYANKA RAMESH',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '11',
+                    name: ' DHURI NEHAL VASANT',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '12',
+                    name: ' GARDE TANMAY PRAMOD',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '13',
+                    name: ' GURAV PRANALI GAJANAN',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '14',
+                    name: ' JADHAV PRAJAKTA DATTARAM',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '15',
+                    name: ' JADHAV PRATIK JIVAN',
+                    mcq: ' 8 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '16',
+                    name: ' JANGLE SUSHAMA DEOO',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '17',
+                    name: ' JAYGADE JANHAVI JEEVAN',
+                    mcq: ' 8 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '18',
+                    name: ' JOSHI MADHURA AVINASH',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '19',
+                    name: ' KADAM RUSHIKESH DATTATRAY',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '20',
+                    name: ' KAMBALE ASHISH ANIL',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '21',
+                    name: ' KHAN TAUZ TANVEER',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '22',
+                    name: ' KHEDASKAR SHREYA SANJAY',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '23',
+                    name: ' KHEDEKAR SOHAM UDAY',
+                    mcq: ' 9 ',
+                    nmcq: ' 5',
+                },
+                {
+                    rollno: '24',
+                    name: ' KOLHATKAR ARPITA VILAS',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '25',
+                    name: ' KORAVI SOURABH SHIVAJI',
+                    mcq: ' 8 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '26',
+                    name: ' KUMBHAR RUTUJA RAJENDRA',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '27',
+                    name: ' LAKHAN YOGESHRI PRAKASH',
+                    mcq: ' 8 ',
+                    nmcq: ' 10  ',
+                },
+                {
+                    rollno: '28',
+                    name: ' LELE JANHAVI MAHESH',
+                    mcq: ' 8 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '29',
+                    name: ' MADKAIKAR HARSH MILIND',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '30',
+                    name: ' MALJI ATHARVA BALKRISHNA',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '31',
+                    name: ' MANE SUPRIYA NANDKUMAR',
+                    mcq: ' 5 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '32',
+                    name: ' MARAGALE TUSHAR NARAYAN',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '33',
+                    name: ' MATKAR SAIRAJ SANJAY',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '34',
+                    name: ' MESTRI ATHARVA CHANDRASHEKHAR',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '35',
+                    name: ' MHADE NEHA ASHOK',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '36',
+                    name: ' MHADGUT ASAVARI PRADEEPKUMAR',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '37',
+                    name: ' MIRASHI PANKAJ SANTOSH',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '38',
+                    name: ' MUKADAM AFRAH MUSHTAQ',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '39',
+                    name: ' MUKADAM MARUFA IRFAN',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '40',
+                    name: ' MUKADAM SUHA MOHAMED',
+                    mcq: ' 10 ',
+                    nmcq: ' 10  ',
+                },
+                {
+                    rollno: '41',
+                    name: ' MUNGEKAR MANTHAN BHALCHANDRA',
+                    mcq: ' 9 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '42',
+                    name: ' NABAR PRADNYA KISHOR',
+                    mcq: ' 9 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '43',
+                    name: ' NACHANKAR GURUPRASAD SUBHASH',
+                    mcq: ' 9 ',
+                    nmcq: ' 10  ',
+                },
+                {
+                    rollno: '44',
+                    name: ' NACHANKAR VAISHNAVI NILESH',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '45',
+                    name: ' NAKHWA ARMAN ANIS',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '46',
+                    name: ' NALAWADE SAYALI UMESH',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '47',
+                    name: ' NARKAR RAJ VINOD',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '48',
+                    name: ' NARVEKAR YASH NAGESH',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '49',
+                    name: ' PALAV PRATHAMESH PRADEEP',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '50',
+                    name: ' PANCHAL MRUNAL SANDIP',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '51',
+                    name: ' PARAB SHANKAR SITARAM',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '52',
+                    name: ' PARANJAPE NIVEDITA PRASHANT',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '53',
+                    name: ' PARANJAPE PRATHAMESH VILAS',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '54',
+                    name: ' PARDESHI ASHISH KISHORSING',
+                    mcq: ' 8 ',
+                    nmcq: ' 9  ',
+                },
+                {
+                    rollno: '55',
+                    name: ' PATANKAR PRIYANKA VIJAY',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '56',
+                    name: ' PATIL MADHURA DATTATRAY',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '57',
+                    name: ' PAWAR SAYALI DILIP',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '58',
+                    name: ' PHADNIS ANTARA SUNIT',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '59',
+                    name: ' PRABHU LAKSHITA RAJENDRAKUMAR',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '60',
+                    name: ' RAHUL KAUSHAL PRASAD',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '61',
+                    name: ' RAIN PRANJAL PRAVIN',
+                    mcq: ' 7 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '62',
+                    name: ' RAJAM BHUSHAN RATNAKAR',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '63',
+                    name: ' RANE PRATHAMESH VILAS',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '64',
+                    name: ' RANSHUR PRATIKSHA DILIP',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '65',
+                    name: ' SALGAONKAR SHWETA SHARAD',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '66',
+                    name: ' SAWANT ASAWARI SHAILENDRA',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '67',
+                    name: ' SAWANT DNYANESH DHANANJAY',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '68',
+                    name: ' SHINGARE PRANALI DILIP',
+                    mcq: ' 10 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '69',
+                    name: ' SHIRGAONKAR VED SAGAR',
+                    mcq: ' 9 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '70',
+                    name: ' SOLKAR RIFAH MUNAF',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '71',
+                    name: ' SURVE SAKSHI DEEPAK',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '72',
+                    name: ' TAMHANEKAR MAHADEV VIJAY',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '73',
+                    name: ' TEMBE AKSHAY ANAND',
+                    mcq: ' 10 ',
+                    nmcq: ' 10',
+                },
+                {
+                    rollno: '74',
+                    name: ' UPPARA KAKULA KAVYASHREE',
+                    mcq: ' 9',
+                    nmcq: ' 9  ',
+                },
+                {
+                    rollno: '75',
+                    name: ' VASKAR RUTIK RAVINDRA',
+                    mcq: ' 9 ',
+                    nmcq: ' 9',
+                },
+                {
+                    rollno: '76',
+                    name: ' WANIVDEKAR TANVI PRASHANT',
+                    mcq: ' 9 ',
+                    nmcq: ' 10 ',
+                },
+            ]
+
+            $scope.students = students;
+
+            $scope.searchedStudent = {
+                rollno: "unavailable",
+                name: "unavailable",
+                mcq: "unavailable",
+                nmcq: "unavailable",
+                total: "unavailable"
+            }
+
+            $scope.button_text = "Search Student";
+
+            $scope.column = "name";
+            $scope.isReverse = false;
+            $scope.input_roll_no = "";
+
+            $scope.sortData = (column) => {
+                $scope.column = column;
+                $scope.isReverse = !$scope.isReverse;
+            }
+
+            $scope.searchStudent = (input_rollno) => {
+                
+                const input_roll_no = parseInt(input_rollno);
+
+                if (input_roll_no > 76 || input_roll_no < 1 || input_rollno === "") {
+                    alert("Please enter a valid roll no.")
+                    $scope.input_roll_no = "";
+                    return;
+                }
+
+                const result = $scope.students.find(({rollno}) => rollno === input_rollno);
+                const total_marks = parseInt(result.mcq) + parseInt(result.nmcq);
+
+                $scope.searchedStudent = {
+                rollno: result.rollno,
+                name: result.name,
+                mcq: result.mcq,
+                nmcq: result.nmcq,
+                total: total_marks.toString()
+            }
+
+                $scope.input_roll_no = "";
+
+            }
+
+        });
+
+    </script>
+</body>
+
+</html>
